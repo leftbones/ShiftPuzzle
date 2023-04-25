@@ -5,7 +5,10 @@ namespace ShiftPuzzle;
 class Block {
     public Vector2i Position { get; set; }
     public Vector2i TargetPos { get; set; }
-    public int Type { get; private set; }
+    public int Type { get; set; }
+    public bool Matched { get; set; }
+
+    public bool IsMoving { get { return Position != TargetPos; } }
 
     public Block(Vector2i pos, int type) {
         Position = pos;
@@ -14,20 +17,17 @@ class Block {
     }
 
     public void Update() {
-        if (Position != TargetPos) {
+        if (IsMoving) {
             int MX = 0;
             int MY = 0;
 
-            if (Position.X < TargetPos.X) MX = 4;
-            if (Position.X > TargetPos.X) MX = -4;
-            if (Position.Y < TargetPos.Y) MY = 4;
-            if (Position.Y > TargetPos.Y) MY = -4;
+            if (Position.X < TargetPos.X) MX = 8;
+            if (Position.X > TargetPos.X) MX = -8;
+            if (Position.Y < TargetPos.Y) MY = 8;
+            if (Position.Y > TargetPos.Y) MY = -8;
 
             Move(MX, MY);
         }
-    }
-
-    public void Shift(int dir) {
     }
 
     private void Move(int x, int y) {

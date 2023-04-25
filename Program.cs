@@ -11,9 +11,6 @@ class Program {
         InitWindow(Game.WindowSize.X, Game.WindowSize.Y, "Shift");
         SetTargetFPS(60);
         
-        ////
-        // Setup
-
 
         ////
         // Loop
