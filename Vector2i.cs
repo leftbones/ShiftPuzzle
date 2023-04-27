@@ -195,10 +195,14 @@ public struct Vector2i : IEquatable<Vector2i> {
 
 
 	////
-	// Overrides
+	// Overrides + Other
 
 	public override string ToString() {
 		return string.Format("({0}, {1})", X, Y);
+	}
+
+	public Vector2 ToVec2() {
+		return new Vector2(X, Y);
 	}
 
 	public override bool Equals([NotNullWhen(true)] object? obj) {

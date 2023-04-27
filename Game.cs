@@ -1,3 +1,4 @@
+using System.Numerics;
 using Raylib_cs;
 using static Raylib_cs.Raylib;
 
@@ -27,19 +28,21 @@ class Game {
     private float SpawnTimer = 0.0f;
     private float SpawnRate = 0.2f;
 
+    private int Score = 0;
+
     private Color[] Colors = new Color[] {
         new Color(239, 71, 111, 255),       // Red
-        // new Color(7, 197, 102, 255),        // Green
         new Color(1, 151, 244, 255),        // Blue
         new Color(255, 206, 92, 255),       // Yellow
+        new Color(255, 117, 56, 255),       // Orange
         new Color(159, 89, 197, 255)        // Purple
     };
 
     private Dictionary<string, KeyboardKey> Keys = new Dictionary<string, KeyboardKey>() {
-        { "MoveUp", KeyboardKey.KEY_W },
-        { "MoveDown", KeyboardKey.KEY_S },
-        { "ShiftLeft", KeyboardKey.KEY_A },
-        { "ShiftRight", KeyboardKey.KEY_D },
+        { "MoveUp", KeyboardKey.KEY_UP },
+        { "MoveDown", KeyboardKey.KEY_DOWN },
+        { "ShiftLeft", KeyboardKey.KEY_LEFT },
+        { "ShiftRight", KeyboardKey.KEY_RIGHT },
     };
 
     private Color MaskColor = new Color(40, 40, 40, 255);
@@ -100,14 +103,22 @@ class Game {
 
                     if (IsMatch(x, y-1, B.Type)) {
                         Matches.Add(Field[x, y-1]);
-                        if (IsMatch(x, y-2, B.Type))
+                        if (IsMatch(x, y-2, B.Type)) {
                             Matches.Add(Field[x, y-2]);
+                            // if (IsMatch(x, y-3, B.Type)) {
+                            //     Matches.Add(Field[x, y-3]);
+                            // }
+                        }
                     }
 
                     if (IsMatch(x, y+1, B.Type)) {
                         Matches.Add(Field[x, y+1]);
-                        if (IsMatch(x, y+2, B.Type))
+                        if (IsMatch(x, y+2, B.Type)) {
                             Matches.Add(Field[x, y+2]);
+                            // if (IsMatch(x, y+3, B.Type)) {
+                            //     Matches.Add(Field[x, y+3]);
+                            // }
+                        }
                     }
 
                     if (Matches.Count >= 3) {
@@ -122,14 +133,22 @@ class Game {
 
                     if (IsMatch(x-1, y, B.Type)) {
                         Matches.Add(Field[x-1, y]);
-                        if (IsMatch(x-2, y, B.Type))
+                        if (IsMatch(x-2, y, B.Type)) {
                             Matches.Add(Field[x-2, y]);
+                            // if (IsMatch(x-3, y, B.Type)) {
+                            //     Matches.Add(Field[x-3, y]);
+                            // }
+                        }
                     }
 
                     if (IsMatch(x+1, y, B.Type)) {
                         Matches.Add(Field[x+1, y]);
-                        if (IsMatch(x+2, y, B.Type))
+                        if (IsMatch(x+2, y, B.Type)) {
                             Matches.Add(Field[x+2, y]);
+                            // if (IsMatch(x+3, y, B.Type)) {
+                            //     Matches.Add(Field[x+3, y]);
+                            // }
+                        }
                     }
 
                     if (Matches.Count >= 3) {
@@ -188,6 +207,7 @@ class Game {
                     if (B.Matched) {
                         GoToDropBlocks = false;
                         NewBlock(x, y, -1);
+                        Score += 100;
                         return;
                     }
                 }
@@ -236,8 +256,9 @@ class Game {
     // Draw all the things
     public void Draw() {
         ////
-        // Debug
-        DrawText(String.Format("State: {0}", State.ToString()), 5, 5, 20, Color.WHITE);
+        // HUD
+        DrawText(String.Format("Score: {0}", Score.ToString()), 10, 10, 20, Color.BLACK);
+        DrawText(String.Format("Score: {0}", Score.ToString()), 8, 8, 20, Color.WHITE);
 
         ////
         // Field
@@ -270,6 +291,26 @@ class Game {
             DrawRectangle(B.Position.X + 3, B.Position.Y + 3, BlockSize - 2, BlockSize - 2, Color.BLACK); // Shadow
             DrawRectangle(B.Position.X + 1, B.Position.Y + 1, BlockSize - 2, BlockSize - 2, Base);
             DrawRectangle(B.Position.X + 2, B.Position.Y + 2, BlockSize - 4, BlockSize - 4, Accent);
+
+            // DrawText(B.Type.ToString(), B.Position.X + 5, B.Position.Y + 5, 20, Color.BLACK);
+            switch (B.Type) {
+                case 0:
+                    DrawCircle(B.Position.X + BlockSize / 2, B.Position.Y + BlockSize / 2, 10.0f, Base);
+                    break;
+                case 1:
+                    DrawRectangle(B.Position.X + BlockSize / 4, B.Position.Y + BlockSize / 4, BlockSize / 2, BlockSize / 2, Base);
+                    break;
+                case 2:
+                    DrawPoly(new Vector2(B.Position.X + BlockSize / 2, B.Position.Y + BlockSize / 2), 5, 10.0f, 180.0f, Base);
+                    break;
+                case 3:
+                    DrawPoly(new Vector2(B.Position.X + BlockSize / 2, B.Position.Y + BlockSize / 2), 3, 10.0f, 180.0f, Base);
+                    break;
+                case 4:
+                    DrawRectangle((B.Position.X + BlockSize / 2) - 4, B.Position.Y + BlockSize / 4, BlockSize / 4, BlockSize / 2, Base);
+                    DrawRectangle(B.Position.X + BlockSize / 4, (B.Position.Y + BlockSize / 2) - 4, BlockSize / 2, BlockSize / 4, Base);
+                    break;
+            }
         }
 
         // Fake Blocks
